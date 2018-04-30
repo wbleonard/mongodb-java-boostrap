@@ -26,13 +26,15 @@ public class App {
         System.out.println("MongoDB Java Boostrap");
 
         String uriString = "mongodb://localhost:27017";
+        String database = "app";
+        String collection = "apps";
 
         MongoClientURI uri = new MongoClientURI(uriString);
         MongoClient mongoClient;
 		try {
             mongoClient = new MongoClient(uri);
-            DB db = mongoClient.getDB("restaurants");
-            DBCollection coll = db.getCollection("restaurants");
+            DB db = mongoClient.getDB(database);
+            DBCollection coll = db.getCollection(collection);
             DBObject myDoc = coll.findOne();
             System.out.println(myDoc);
 		} catch (UnknownHostException e) {
