@@ -1,46 +1,33 @@
 package com.mongodb.java.bootstrap;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.BulkWriteOperation;
-import com.mongodb.BulkWriteResult;
-import com.mongodb.Cursor;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-import com.mongodb.ParallelScanOptions;
-import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 
-import java.util.List;
-import java.util.Set;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.net.UnknownHostException;
 
 public class App {
 
     public static void main(String[] args) {
-        System.out.println("MongoDB Java Boostrap");
+        System.out.println("MongoDB Java Bootstrap");
 
-        String uriString = "mongodb://localhost:27017";
-        String database = "app";
-        String collection = "apps";
-
-        MongoClientURI uri = new MongoClientURI(uriString);
-        MongoClient mongoClient;
-		try {
-            mongoClient = new MongoClient(uri);
-            DB db = mongoClient.getDB(database);
-            DBCollection coll = db.getCollection(collection);
-            DBObject myDoc = coll.findOne();
-            System.out.println(myDoc);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+        // Grab the connection string from the environment:
+        String uriString = System.getenv("mongodb_uri");
+        
+        if (uriString == null) {
+            System.out.println("MongoDB Connection String environment variable, 'mongodb_uri', is not set");
+            return;
         }
+
+        //String uriString = "mongodb://localhost:27017";
+        String database_string = "sample_analytics";
+        String collection_string = "customers";
+
+        MongoClient mongoClient = MongoClients.create(uriString);
+        MongoDatabase database = mongoClient.getDatabase(database_string);
+        MongoCollection<Document> collection = database.getCollection(collection_string);
+        Document myDoc = collection.find().first();
+        System.out.println(myDoc);
     }
 }
-
