@@ -1,30 +1,32 @@
 package com.mongodb.java.bootstrap;
 
-import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoClient;
 
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mongodb.MongoDriverInformation;
 import com.mongodb.MongoCredential;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.internal.build.MongoDriverVersion;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
+
 
 public class App {
 
     public static void main(String[] args) {
         System.out.println("\n*** MongoDB Java Bootstrap ***");
 
-        String mongoDriverVersion = MongoDriverVersion.VERSION;
+        String mongoDriverVersion  = MongoDriverVersion.VERSION;
         System.out.println("\n*** MongoDB Driver Version: " + mongoDriverVersion + " ***");
 
         String connStyle = System.getenv("mongodb_connection_style");
-        // System.out.println( "mongodb_connection_style: " + connStyle);
+        //System.out.println( "mongodb_connection_style: " + connStyle);
 
         String uriString = null;
         String serverName = null;
@@ -42,14 +44,14 @@ public class App {
             System.out.println("\n*** Using URI connection style ***\n");
             // Grab the connection string from the environment:
             uriString = System.getenv("mongodb_uri");
-
+            
             if (uriString == null) {
                 System.out.println("MongoDB Connection String environment variable, 'mongodb_uri', is not set");
                 return;
             }
         }
 
-        // String uriString = "mongodb://localhost:27017";
+        //String uriString = "mongodb://localhost:27017";
         String database_string = "sample_analytics";
         String collection_string = "customers";
         MongoDatabase database = null;
@@ -61,27 +63,22 @@ public class App {
 
             ServerAddress serverAddress = new ServerAddress(serverName, port);
             List<ServerAddress> addressList = Arrays.asList(new ServerAddress[] { serverAddress });
-            System.out.println("addressList: " + addressList);
-
+            System.out.println("addressList: " + addressList);      
+            
             List<MongoCredential> mongoCredentialList = new ArrayList();
-            MongoCredential mongoCredential = MongoCredential.createScramSha1Credential(username, "admin",
-                    password.toCharArray());
-
-            // MongoClientOptions.Builder options = new MongoClientOptions.Builder();
-            // options.sslEnabled(true);
-
-            MongoClient mongoClient = MongoClients
-                    .create(MongoClientSettings.builder()
-                            .applyToClusterSettings(
-                                    builder -> builder.hosts(addressList))
-                            .build());
-
+            MongoCredential mongoCredential = MongoCredential.createScramSha1Credential(username, "admin", password.toCharArray());
+    
+            MongoClientOptions.Builder options = new MongoClientOptions.Builder();
+            options.sslEnabled(true);
+            
+            com.mongodb.MongoClient mongoClient = new MongoClient(addressList, mongoCredential, options.build());
             database = mongoClient.getDatabase(database_string);
 
         }
 
+        
         MongoCollection<Document> collection = database.getCollection(collection_string);
-        Document myDoc = collection.find().first();
+        Document myDoc = collection.find().first();   
 
         System.out.println("\nResults: ");
         System.out.println("\n" + myDoc + "\n");
