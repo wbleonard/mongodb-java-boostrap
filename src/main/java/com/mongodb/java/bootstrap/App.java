@@ -50,8 +50,8 @@ public class App {
         }
 
         // String uriString = "mongodb://localhost:27017";
-        String database_string = "sample_analytics";
-        String collection_string = "customers";
+        String database_string = "ai-1ops";
+        String collection_string = "jira";
         MongoDatabase database = null;
 
         if (connStyle == null || connStyle.equals("URI")) {
