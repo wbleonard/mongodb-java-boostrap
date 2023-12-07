@@ -7,16 +7,16 @@
   <name>java-bootstrap</name>
   <url>http://maven.apache.org</url>
   <dependencies>
-    <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+    <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver-sync</artifactId>
-      <version>4.3.3</version>
+      <version>4.11.1</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
+      <version>[1.2.13,)</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
